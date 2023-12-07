@@ -14,12 +14,12 @@ function App() {
 
   const [formData, setFormData] = useState(initialFormData);
   const [articleTitleList, setArticleTitleList] = useState([]);
+  const [postData, setPostData] = useState ([]);
 
-  useEffect(() => {
-      alert("Benvenuto");
+  // useEffect(() => {
+  //     alert("Benvenuto");
     
-  }, []);
-
+  // }, []);
 
   // Funzione per aggiornare il form quando un campo cambia
   function updateFormData(newValue, fieldName) {
@@ -53,12 +53,20 @@ function App() {
     setArticleTitleList(articleTitleList.filter((article) => article.id !== idToRemove));
   }
 
+  function fetchPosts () {
+    // http://localhost:3000/posts/all
+    fetch("http://localhost:3000/posts/all")
+    .then((res) => res.json())
+    .then(setPostData);
+  }
+  useEffect(fetchPosts, []);
+
   return (
     <>
       <form onSubmit={handleFormSubmit} className='mb-4'>
 
         <div>
-          <label htmlFor="title_article" className='block font-bold mb-2'>title</label>
+          <label htmlFor="title_article" className='block font-bold mb-2'>Title</label>
           <textarea name='title' placeholder="Enter article's title" className="border px-3 py-4 w-full" value={formData.title} onChange={(e) => updateFormData(e.target.value, 'title')}></textarea>
         </div>
 
@@ -103,8 +111,21 @@ function App() {
 
       </form>
 
-      {/* Visualizzazione degli articoli */}
       <div>
+        <h1>Reparto post già esistenti</h1>
+
+        <ul>
+          {postData.map((post) => (
+            <li key={post.id} className="flex py-4 border-b items-center">
+              
+              {post.title && <span className="mb-2"><strong>Titolo</strong> {post.title}</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h1>Reparto nuovi post creati</h1>
 
         <ul>
           {articleTitleList.map((article) => (
